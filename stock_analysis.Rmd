@@ -1,0 +1,12 @@
+---
+title: "stock_analysis"
+author: "Courtney Goodridge"
+date: "28/03/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The markdown will aim to provide and working examples of the analysis and simulation of stocks.
