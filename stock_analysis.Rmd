@@ -9,4 +9,31 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-The markdown will aim to provide and working examples of the analysis and simulation of stocks.
+The markdown will aim to provide and working examples of the analysis and simulation of stocks. This example is taken from the following wesbite (https://towardsdatascience.com/analyzing-stocks-using-r-550be7f5f20d).
+
+## Load packages 
+
+```{r}
+library(quantmod)
+library(xts)
+library(rvest)
+library(tidyverse)
+library(stringr)
+library(forcats)
+library(lubridate)
+library(plotly)
+library(dplyr)
+library(PerformanceAnalytics)
+```
+
+```{r}
+getSymbols("AMZN", from = "2008-08-01", to = "2018-08-17")
+
+AMZN_log_returns <- AMZN %>%
+  Ad()%>%
+  dailyReturn(type = 'log')
+```
+
+The *getSymbols()* function selects data from a specific company stock over a specific period of time.
+
+*Ad()* extracts open, high, low, close and volume data from the stock data object. The *dailyReturns()* then uses extracted data to calculate the daily returns. Here we specify the log of these turns. The *quantmod* package can provide different types of retruns such as weekly (*weeklyRetruns()*) or monthly (*monthlyReturns()*). 
