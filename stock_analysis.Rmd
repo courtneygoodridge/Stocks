@@ -73,14 +73,33 @@ An exponential moving average is where the weighting factor of the moving averag
 
 When the average signal crosses the MACD series, this is an indication that the trend might be accelerating. Traders might want to buy stock when the MACD crosses above the signal line (stock is accelerating) and sell when the MACD crosses below the signal line (stock is decelerating) (https://www.investopedia.com/terms/m/macd.asp).
 
-**TO DO** 
+*Why do MACD/signal crossovers indicate traders to buy/sell*
 
-Find out *why* the above indicates the increases or decreases in share price...
+- The fast EMA responds more quickly than the slow EMA. By comparing the differences, the MACD series can be used to indicate changes in trends of the stocks.
 
+## Comparing public stocks
 
+```{r}
+# Facebook
+getSymbols("FB", from = "2008-08-01", to = "2018-08-17")
 
+FB_log_returns <- FB %>%
+  Ad()%>%
+  dailyReturn(type = 'log')
 
+# Apple
+getSymbols("AAPL", from = "2008-08-01", to = "2018-08-17")
 
+AAPL_log_returns <- AAPL %>%
+  Ad()%>%
+  dailyReturn(type = 'log')
 
+# Tesla
+getSymbols("TSLA", from = "2008-08-01", to = "2018-08-17")
 
-The subset argument means the data is filter in only to include the year 2018.
+TSLA_log_returns <- TSLA %>%
+  Ad()%>%
+  dailyReturn(type = 'log')
+```
+
+This next section compares the risk and rewards of different stocks. First I load stocks from Google, Facebook, Apple, and Tesla and calculate the log retruns. The mean of the log retruns is considered the average reward for a stock. The standard deviation of the log returns can be considered the risk (i.e. highr standard deviations results in increased volatility and thus higher risk).
