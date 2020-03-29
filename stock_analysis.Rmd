@@ -26,6 +26,8 @@ library(dplyr)
 library(PerformanceAnalytics)
 ```
 
+## Selecting Amazon stock data 
+
 ```{r}
 getSymbols("AMZN", from = "2008-08-01", to = "2018-08-17")
 
@@ -36,4 +38,49 @@ AMZN_log_returns <- AMZN %>%
 
 The *getSymbols()* function selects data from a specific company stock over a specific period of time.
 
-*Ad()* extracts open, high, low, close and volume data from the stock data object. The *dailyReturns()* then uses extracted data to calculate the daily returns. Here we specify the log of these turns. The *quantmod* package can provide different types of retruns such as weekly (*weeklyRetruns()*) or monthly (*monthlyReturns()*). 
+*Ad()* extracts open, high, low, close and volume data from the stock data object. The *dailyReturns()* then uses extracted data to calculate the daily returns. Here we specify the log of these returns. The *quantmod* package can provide different types of retruns such as weekly (*weeklyRetruns()*) or monthly (*monthlyReturns()*). 
+
+## Plotting Amazon stock data 
+
+```{r}
+AMZN %>%
+  Ad() %>% 
+  chartSeries()
+
+AMZN %>% 
+  chartSeries(TA =' addBBands(); addVo(); addMACD()', subset = '2018')
+```
+
+## Plot 1: simple moving average of Amazon stock price
+
+The first plot uses the *chartSeries()* function to plot the price of Amazon stock over the given time period. A simple moving average is used. A simple moving average is calculated by adding recent prices and then dividing by the number of time periods. For example, imagine a series of numbers (stock prices) and a fixed subset of numbers that we use to calculating the average. The first value of the moving average is calculated by taking the average of subset. The subset is then shifted forward by one number in the series, and the average calculated again - this provides the value for the second number in the moving average. 
+
+This method can be used as finite impulse filter to smooth a signal and erradicate small flunctuations when looking at signal across large period of time (as you might be stock prices).
+
+## Plot 2: 3 subplots containing differing types of data
+
+*addBBands()*: This function adds Bollinger Bands to the data set. Bollinger Bands plot two lines that are 2 standard deviations (by default but this can be altered) above and below a moving average signal. Standard deviations are a measure of variability in your data - large intervals denotes increased variabilty (or volatility) of the market price, whereas lines contract when the market is less volatile.
+
+*A brief note on Bollinger Bands*
+
+The moving average increases towards the upper bound, traders indicate that the stock might be overbought. This can be due to market news. If this is the case, traders might bet on a reversal. If the moving average is closer to the lower bound, traders might indicate that the stock is oversold and thus is at a lower price that it's intrinsic value (https://www.investopedia.com/terms/b/bollingerbands.asp).
+
+*addVo()*: This function plots the volume of stock traded throughout the year. As we can see, increases in volume of stock traded results in wider Bollinge Bands, indicating increased volatility.
+
+*addMACD()*: This function plots the moving average convergence/divergence. The MACD indicator is comprised of 3 times series -  *MACD proper series* (difference between a fast expoential moving average and a slow expoential moving average), the *average signal*, and the *divergence* (difference between the two).  
+
+An exponential moving average is where the weighting factor of the moving average decreases exponentially. This means that the greater weight is placed on more recent data points (usually measured in days) within the signal. A "fast" EMA is one where weighting is placed over a shorter amount of days, a "slow" EMA is one where the weighting is placed over a longer amount of days. The difference is the MACD signal.
+
+When the average signal crosses the MACD series, this is an indication that the trend might be accelerating. Traders might want to buy stock when the MACD crosses above the signal line (stock is accelerating) and sell when the MACD crosses below the signal line (stock is decelerating) (https://www.investopedia.com/terms/m/macd.asp).
+
+**TO DO** 
+
+Find out *why* the above indicates the increases or decreases in share price...
+
+
+
+
+
+
+
+The subset argument means the data is filter in only to include the year 2018.
