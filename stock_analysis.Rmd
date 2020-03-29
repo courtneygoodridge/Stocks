@@ -100,6 +100,70 @@ getSymbols("TSLA", from = "2008-08-01", to = "2018-08-17")
 TSLA_log_returns <- TSLA %>%
   Ad()%>%
   dailyReturn(type = 'log')
+
+# Google 
+getSymbols("GOOGL", from = "2008-08-01", to = "2018-08-17")
+
+GOOGL_log_returns <- GOOGL %>%
+  Ad()%>%
+  dailyReturn(type = 'log')
+
+# Computing risk and reward metrics 
+fb_df <- data.frame(reward = mean(FB_log_returns), risk = sd(FB_log_returns))
+
+aapl_df <- data.frame(reward = mean(AAPL_log_returns), risk = sd(AAPL_log_returns))
+
+tsla_df <- data.frame(reward = mean(TSLA_log_returns), risk = sd(TSLA_log_returns))
+
+amzn_df <- data.frame(reward = mean(AMZN_log_returns), risk = sd(AMZN_log_returns))
+
+googl_df <- data.frame(reward = mean(GOOGL_log_returns), risk = sd(GOOGL_log_returns))
+
+df <- rbind(fb_df, aapl_df, tsla_df, amzn_df, googl_df)
+
+df <- df %>%
+  dplyr::mutate(stocks = c("FB", "AAPL", "TSLA", "AMZN", "GOOGL"))
+
+ggplot(df, aes(x = reward, y = risk, col = stocks)) +
+  geom_point()
+
 ```
 
 This next section compares the risk and rewards of different stocks. First I load stocks from Google, Facebook, Apple, and Tesla and calculate the log retruns. The mean of the log retruns is considered the average reward for a stock. The standard deviation of the log returns can be considered the risk (i.e. highr standard deviations results in increased volatility and thus higher risk).
+
+From this plot, we find that Google is the lowest risk but also provides the lowest return. Tesla is much more high risk but the returns are much higher. Amazon is perhaps the best middle ground providing reasonable returns with reduced risk.
+
+## Diversifying your investments
+
+A popular investment technique is to make your investments diverse (not putting all your eggs in one basket). 
+
+```{r}
+dat_log <-cbind(diff(log(Cl(AMZN))), diff(log(Cl(GOOGL))), diff(log(Cl(AAPL))),diff(log(Cl(FB))))
+
+dat <- dat <-cbind(diff(Cl(AMZN)), diff(Cl(GOOGL)), diff(Cl(AAPL)), diff(Cl(FB)))
+
+chart.Correlation(dat_log)
+```
+Looking at log returns, all of the correlations are significant because they are all technology companies, however the smallest correlation is between Facebook and Apple. The take home here is that you want to buy stocks that have little or no correlation the maximise the rate of return. 
+
+*How the correlations are calculated*
+
+He we take the closing price of each stock. We use the *diff()* function to differentiate it, thus giving use a metric for how the stock price changed.
+
+Alternatively, the diffrence of the log can be calculated.
+
+*Difference between the the log difference and the natural difference*
+
+(https://money.stackexchange.com/questions/24382/what-does-the-average-log-return-value-of-a-stock-mean)
+
+- The log return can be used as a proxy measure for the percentage change in returns between periods. However, if the market is volatile, then the log retruns will be vastly different from the percentage change.
+
+- Conversely, just using the *diff()* function calculates the the absolute difference in returns between a given period (in this example, the difference in closing price between days).  
+
+- If you are looking at long term investments, log returns might be best to look at as the cancel out small day-to-day fluctuations in price over long periods of time. Conversely, if investigating shorter term investments where prices changes are likely to be more volatile (over weeks/months) then utilising differences in returns or percentage differences might be better to use. 
+
+*Other characteristics of log retruns*
+
+- Log returns is that they are additive over time. Imagine you have a stock that increases in price of 3 periods. To calculate the one period difference between the first two periods, you would divivde the returns in period 2 by the returns in period 1. To calculate the one period difference between periods 2 and 3, you would divide the returns in period 3 by the returns in period 2.
+
+- However if you want to the difference across multiple periods, by taking the natural log of returns you can add the percentage differences of each of the periods - this is equivalent to dividing the returns in period 3 by the retruns in period 1 (https://www.youtube.com/watch?v=PtoUlt3V0CI)
